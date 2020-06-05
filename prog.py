@@ -14,8 +14,8 @@ xdata = []
 ydata = []
 zdata = []
 
+# Getting PDB Filename to Extract from User
 fileName = ""
-
 valid = 1
 while valid > 0:
     try:
@@ -25,8 +25,7 @@ while valid > 0:
     except:
         print("Invalid file name, try again")
 
-# getCoordinates()
-
+#Extracts Alpha Carbon Atoms from PDB file and places into ac.txt
 def getAlphaCarbons(fileName):
     fw = open('ac.txt', 'w')
     fr = open(fileName + '.pdb', 'r')
@@ -38,26 +37,32 @@ def getAlphaCarbons(fileName):
     fw.close()
     fr.close()
 
+#Takes xyz coordinates of ac atoms from ac.txt and puts them into arrays
 def getCoordinates():
     fh = open('ac.txt', 'r')    
     for line in fh:
         items = line.split()
         coords.append([float(items[6]), float(items[7]), float(items[8])])
         labels.append(items[5])
+        
+    for coord in coords:
+        xdata.append(coord[0])
+        ydata.append(coord[1])
+        zdata.append(coord[2])
 
+#Generates a C-Alpha Trace by plotting and connecting data
+def plotGraph(xdata, ydata, zdata):
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+
+    ax.plot3D(xdata, ydata, zdata, "green")
+    ax.scatter3D(xdata, ydata, zdata, s=1, c="r", cmap='hsv')
+    plt.show()
+
+
+
+
+#Main Procedure
 getAlphaCarbons(fileName)
 getCoordinates()
-
-
-for coord in coords:
-    xdata.append(coord[0])
-    ydata.append(coord[1])
-    zdata.append(coord[2])
-        
-fig = plt.figure()
-ax = plt.axes(projection='3d')
-
-ax.plot3D(xdata, ydata, zdata, "green")
-ax.scatter3D(xdata, ydata, zdata, s=1, c="r", cmap='hsv')
-
-plt.show()
+plotGraph(xdata, ydata, zdata)
