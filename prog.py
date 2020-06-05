@@ -1,12 +1,19 @@
 from Bio.PDB import *
+from mpl_toolkits import mplot3d
 import re
-from skbio import DistanceMatrix
+import numpy as np
+import matplotlib.pyplot as plt
+# from skbio import DistanceMatrix
 
 parser = PDBParser()
 io=PDBIO()
 chainz = []
 coords = []
 labels = []
+xdata = []
+ydata = []
+zdata = []
+
 fileName = ""
 
 valid = 1
@@ -18,7 +25,6 @@ while valid > 0:
     except:
         print("Invalid file name, try again")
 
-getAlphaCarbons(fileName)
 # getCoordinates()
 
 def getAlphaCarbons(fileName):
@@ -32,15 +38,26 @@ def getAlphaCarbons(fileName):
     fw.close()
     fr.close()
 
-# def getCoordinates():
-fh = open('ac.txt', 'r')    
-for line in fh:
-    items = line.split()
-    coords.append([items[6], items[7], items[8]])
-    labels.append(items[5])
-    
-    
-print(labels)
-    
-    
-    
+def getCoordinates():
+    fh = open('ac.txt', 'r')    
+    for line in fh:
+        items = line.split()
+        coords.append([float(items[6]), float(items[7]), float(items[8])])
+        labels.append(items[5])
+
+getAlphaCarbons(fileName)
+getCoordinates()
+
+
+for coord in coords:
+    xdata.append(coord[0])
+    ydata.append(coord[1])
+    zdata.append(coord[2])
+        
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+
+ax.plot3D(xdata, ydata, zdata, "green")
+ax.scatter3D(xdata, ydata, zdata, s=1, c="r", cmap='hsv')
+
+plt.show()
