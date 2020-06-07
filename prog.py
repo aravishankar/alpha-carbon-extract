@@ -3,11 +3,10 @@ from mpl_toolkits import mplot3d
 import re
 import numpy as np
 import matplotlib.pyplot as plt
-# from skbio import DistanceMatrix
+from sklearn.metrics import *
 
 parser = PDBParser()
 io=PDBIO()
-chainz = []
 coords = []
 labels = []
 xdata = []
@@ -51,7 +50,7 @@ def getCoordinates():
         zdata.append(coord[2])
 
 #Generates a C-Alpha Trace by plotting and connecting data
-def plotGraph(xdata, ydata, zdata):
+def cAlpha(xdata, ydata, zdata):
     fig = plt.figure()
     ax = plt.axes(projection='3d')
 
@@ -59,10 +58,17 @@ def plotGraph(xdata, ydata, zdata):
     ax.scatter3D(xdata, ydata, zdata, s=1, c="r", cmap='hsv')
     plt.show()
 
-
+#Generates a Pairwise Distance Matrix Plot    
+def pdMatrix(coords):
+    pd = pairwise_distances(coords, Y=None, metric='euclidean', n_jobs=None, force_all_finite=True)
+    
+    plt.imshow(pd)
+    plt.colorbar()
+    plt.show()
 
 
 #Main Procedure
 getAlphaCarbons(fileName)
 getCoordinates()
-plotGraph(xdata, ydata, zdata)
+cAlpha(xdata, ydata, zdata)
+pdMatrix(coords)
