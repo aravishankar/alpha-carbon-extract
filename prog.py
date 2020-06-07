@@ -4,6 +4,8 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import *
+from matplotlib.pyplot import *
+from matplotlib.cm import *
 
 parser = PDBParser()
 io=PDBIO()
@@ -58,6 +60,15 @@ def cAlpha(xdata, ydata, zdata):
     ax.scatter3D(xdata, ydata, zdata, s=1, c="r", cmap='hsv')
     plt.show()
 
+# def cAlphaColor(xdata, ydata, zdata):
+#     fig = plt.figure()
+#     ax = plt.axes(projection='3d')
+
+#     ax.plot3D(xdata, ydata, zdata)
+#     p = ax.scatter3D(xdata, ydata, zdata, s=1, c="r", cmap='hsv')
+#     fig.colorbar(p)
+#     plt.show()
+
 #Generates a Pairwise Distance Matrix Plot    
 def pdMatrix(coords):
     pd = pairwise_distances(coords, Y=None, metric='euclidean', n_jobs=None, force_all_finite=True)
@@ -66,9 +77,35 @@ def pdMatrix(coords):
     plt.colorbar()
     plt.show()
 
+#For each CA returns count of other CA within a distance cutoff
+def withinDistance(cutOff):
+    output = []
+
+    pd = pairwise_distances(coords, Y=None, metric='euclidean', n_jobs=None, force_all_finite=True)
+    for point in pd:
+        count = 0
+        for dist in point:
+            if dist < cutOff:
+                count += 1
+        output.append(count)
+        
+    return np.array(output)
+
+# def distanceColor():
+#     cutOff = int(input("Cutoff Distance:"))
+#     fig = plt.figure()
+#     ax = plt.axes()
+#     ax.plot(withinDistance(cutOff))
+#     fig.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
+    
+#     plt.show()
 
 #Main Procedure
 getAlphaCarbons(fileName)
 getCoordinates()
-cAlpha(xdata, ydata, zdata)
-pdMatrix(coords)
+
+# cAlpha(xdata, ydata, zdata)
+# # cAlphaColor(xdata, ydata, zdata)
+# pdMatrix(coords)
+# print(withinDistance(5))
+# distanceColor()
