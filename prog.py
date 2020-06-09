@@ -68,7 +68,7 @@ def cAlpha(xdata, ydata, zdata):
     ax = plt.axes(projection='3d')
 
     ax.plot3D(xdata, ydata, zdata, "green")
-    ax.scatter3D(xdata, ydata, zdata, s=1, c="r", cmap='hsv')
+    ax.scatter3D(xdata, ydata, zdata, s=1, c="r", cmap='RdPu')
     plt.show()
 
 #Generates a C-Alpha Trace, colored by number of CA within cutoff distance for each CA
@@ -77,7 +77,7 @@ def cAlphaColor(xdata, ydata, zdata, cutOff):
     ax = plt.axes(projection='3d')
 
     ax.plot3D(xdata, ydata, zdata, c="black", alpha=0.5)
-    p = ax.scatter3D(xdata, ydata, zdata, s=5, c=withinDistance(cutOff), cmap='hsv')
+    p = ax.scatter3D(xdata, ydata, zdata, s=5, c=withinDistance(cutOff), cmap='RdPu')
     fig.colorbar(p)
     plt.show()
 
@@ -106,7 +106,7 @@ def withinDistance(cutOff):
 #Generates colorbar graph of count of other CA within distance for each CA
 def distanceColor(cutOff):
     
-    fig = plt.imshow(np.reshape(withinDistance(cutOff), (1, len(withinDistance(cutOff)))), cmap='plasma', aspect='25')
+    fig = plt.imshow(np.reshape(withinDistance(cutOff), (1, len(withinDistance(cutOff)))), cmap='RdPu', aspect='25')
     plt.colorbar()
     fig.axes.get_yaxis().set_visible(False)
 
