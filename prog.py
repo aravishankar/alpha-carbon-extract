@@ -8,24 +8,21 @@ from matplotlib.pyplot import *
 import matplotlib.cm as cm
 from matplotlib.colorbar import Colorbar
 
-parser = PDBParser()
-io=PDBIO()
-coords = []
-labels = []
-xdata = []
-ydata = []
-zdata = []
-
 # Getting PDB Filename to Extract from User
-fileName = ""
-valid = 1
-while valid > 0:
-    try:
-        fileName = input("Enter name of PDB file:")
-        structure = parser.get_structure('4HHB', fileName + '.pdb')
-        break
-    except:
-        print("Invalid file name, try again")
+def getPDB():
+    parser = PDBParser()
+    io=PDBIO()
+    fileName = ""
+    valid = 1
+    while valid > 0:
+        try:
+            fileName = input("Enter name of PDB file:")
+            structure = parser.get_structure('4HHB', fileName + '.pdb')
+            break
+        except:
+            print("Invalid file name, try again")
+            
+    return fileName
 
 #Extracts Alpha Carbon Atoms from PDB file and places into ac.txt
 def getAlphaCarbons(fileName):
@@ -41,6 +38,13 @@ def getAlphaCarbons(fileName):
 
 #Takes xyz coordinates of ac atoms from ac.txt and puts them into arrays
 def getCoordinates():
+    
+    coords = []
+    labels = []
+    xdata = []
+    ydata = []
+    zdata = []
+    
     fh = open('ac.txt', 'r')    
     for line in fh:
         items = line.split()
@@ -51,6 +55,8 @@ def getCoordinates():
         xdata.append(coord[0])
         ydata.append(coord[1])
         zdata.append(coord[2])
+        
+    return coords, labels, xdata, ydata, zdata
 
 #Gets cutoff distance from user        
 def getCutoff():
@@ -97,25 +103,29 @@ def withinDistance(cutOff):
         
     return np.array(output)
 
-# def distanceColor(cutOff):
+#Generates colorbar graph of count of other CA within distance for each CA
+def distanceColor(cutOff):
     
-#     fig = plt.figure()
-#     ax = plt.axes()
-    
-#     ax.axhline(y=0, xmin=0, xmax=len(coords), c=withinDistance(cutOff), cmap='hsv')
-    
-#     # ax.plot(labels, withinDistance(cutOff))
-#     # fig.colorbar(cm.ScalarMappable(cmap='autumn'), ax=ax)    
-    
-#     plt.show()
+    fig = plt.imshow(np.reshape(withinDistance(cutOff), (1, len(withinDistance(cutOff)))), cmap='plasma', aspect='25')
+    plt.colorbar()
+    fig.axes.get_yaxis().set_visible(False)
 
-#Main Procedure
+    
+    plt.show()
+
+# ------------------------------------------------- Main Procedure -------------------------------------------------
+
+# ----------------------- Initialize -----------------------
+
+fileName = getPDB()
 getAlphaCarbons(fileName)
-getCoordinates()
+coords, labels, xdata, ydata, zdata = getCoordinates()
 cutOff = getCutoff()
 
-# cAlpha(xdata, ydata, zdata)
-# cAlphaColor(xdata, ydata, zdata, cutOff)
-# pdMatrix(coords)
-# print(withinDistance(cutOff))
-# distanceColor(cutOff)
+# ----------------------- Procedures -----------------------
+
+cAlpha(xdata, ydata, zdata) #Generates a C-Alpha Trace
+cAlphaColor(xdata, ydata, zdata, cutOff) #Generates a C-Alpha Trace, colored by number of CA within cutoff distance for each CA
+pdMatrix(coords) #Generates a Pairwise Distance Matrix Plot for CAs
+print(withinDistance(cutOff)) #For each CA prints count of other CA within a distance cutoff
+distanceColor(cutOff) #Generates colorbar graph of count of other CA within distance for each CA
