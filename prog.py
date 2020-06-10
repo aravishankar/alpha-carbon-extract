@@ -60,7 +60,7 @@ def getCoordinates():
 
 #Gets cutoff distance from user        
 def getCutoff():
-    return int(input("Cutoff Distance: "))
+    return float(input("Cutoff Distance: "))
 
 #Generates a C-Alpha Trace by plotting and connecting data
 def cAlpha(xdata, ydata, zdata):
